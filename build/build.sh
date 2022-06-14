@@ -1,33 +1,39 @@
 #!/usr/bin/env bash
 
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-PACKAGE="gpputest"
-RPMBUILD_DIR="$HOME/rpmbuild"
-$DIR/clean.sh
-if ! test -f "build/build.sh";then
-    echo "You need to be located in the root directory of the **gpputest** repository"
-    exit 1
-fi
-
-CURRENT_DIR=$( pwd )
-echo "CURRENT_DIR: $CURRENT_DIR"
-
-NAME_VER=gpputest-1.0.0
-FILES_DIR=$HOME/$NAME_VER
-
-#Text Color commands
-#
-#Brief: Commands to change the color of a text
 highlight=$(echo -en '\033[01;37m')
-purpleColor=$(echo -en '\033[01;35m')
-cyanColor=$(echo -en '\033[01;36m')
 errorColor=$(echo -en '\033[01;31m')
 warningColor=$(echo -en '\033[00;33m')
 successColor=$(echo -en '\033[01;32m')
 norm=$(echo -en '\033[0m')
 
+PACKAGE=$( grep "Name:" ./*.spec |tr -s ' '|cut -d ' ' -f2 )
+if [[ -z $PACKAGE ]]; then 
+    echo "${errorColor}Package name not found in file .spec file.${norm}"
+    exit 1
+fi
 
+if ! test -f "build/build.sh";then
+    echo "${errorColor}You need to be located in the root directory of the $PACKAGE repository${norm}."
+    exit 1
+fi
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+CURRENT_DIR=$( pwd )
+SPEC_FILE="$PACKAGE.spec"
+VER=$( grep "Version:" "$SPEC_FILE" |tr -s ' '|cut -d ' ' -f2 )
+RPMBUILD_DIR="$HOME/rpmbuild"
+NAME_VER="gpputest-$VER"
+FILES_DIR=$HOME/$NAME_VER
+
+if [[ -z $VER ]]; then 
+    echo "${errorColor}Version not found in file ${norm} $SPEC_FILE"
+    exit 1
+fi
+
+
+# --- ACTION STARTS HERE ---
+$DIR/clean.sh
 
 mkdir -p "$FILES_DIR" && cp -R src/* "$FILES_DIR"
 echo "tar -czvf $NAME_VER.tar.gz $NAME_VER"
@@ -67,10 +73,10 @@ echo "tar -ztvf $RPMBUILD_DIR/SOURCES/$NAME_VER.tar.gz"
 
 URL=$( dirname $( grep "Source0:" gpputest.spec | tr -s ' '|cut -d ' ' -f2 ) )
 
-echo scp $RPMBUILD_DIR/SOURCES/$NAME_VER.tar.gz guttih@guttih.com:/var/www/web-guttih/public/vault/repo/assets/release
-
-if scp $RPMBUILD_DIR/SOURCES/* guttih@guttih.com:/var/www/web-guttih/public/vault/repo/assets/release; then
+UPLOAD_DEST=guttih@guttih.com:/var/www/web-guttih/public/vault/repo/assets/release
+echo "scp $RPMBUILD_DIR/SOURCES/* $UPLOAD_DEST"
+if scp $RPMBUILD_DIR/SOURCES/* "$UPLOAD_DEST"; then
     echo "${successColor}Package accessable${norm} at: $URL/$NAME_VER.tar.gz"
 else
-    echo "Error deploying package to guttih.com"
+    echo "${errorColor}Error deploying package${norm} to $UPLOAD_DEST"
 fi

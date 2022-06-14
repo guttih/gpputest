@@ -2,16 +2,21 @@
 
 My notes about developing this repository
 
-# Requirements
+## Requirements
 In order to use these rpm dev tools you will need to install these packages
 
 ```
 dnf -y install rpmdevtools rpmlint tree
 ```
-# Further reading
+## Further reading
  - https://rpm.org/documentation.html
 
-# Steps to create a new rpm package
+
+## Steps to create a new rpm package automatically
+```
+build/build.sh
+```
+## Steps to create a new rpm package manually
 
 1. Prepare the files you want to distribute
     - Change directory into root of this repository in these instruction we will assume the repository has been cloned to the `~/repos/gpputest` directory

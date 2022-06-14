@@ -8,6 +8,8 @@ URL:            https://guttih.com/public/vault/repo/description/%{name}
 Source0:        https://guttih.com/public/vault/repo/assets/release/%{name}-%{version}.tar.gz
 
 Requires:       cpputest
+Requires:       gcc
+Requires:       make
 
 BuildArch:      noarch
 
