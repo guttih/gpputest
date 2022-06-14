@@ -8,7 +8,9 @@ URL:            https://guttih.com/public/vault/repo/description/%{name}
 Source0:        https://guttih.com/public/vault/repo/assets/release/%{name}-%{version}.tar.gz
 
 Requires:       cpputest
+
 BuildArch:      noarch
+
 %description
 **GppUTest RPM package**
 Contains scripts to help with creating a new c++ project which includes
@@ -26,12 +28,12 @@ install -m644 scripts/* %{buildroot}/usr/share/%{name}/scripts
 install -m644 doc/* %{buildroot}/usr/share/%{name}/doc
 install -m644 LICENSE %{buildroot}/usr/share/%{name}
 
-%files
-%license LICENCE
-$dir /usr/share/%{name}
-/usr/share/%{name}/LICENCE
+%files 
+%license LICENSE
+%dir /usr/share/%{name}
 /usr/share/%{name}/scripts/*
 /usr/share/%{name}/doc/*
+/usr/share/%{name}/LICENSE
 
 
 
