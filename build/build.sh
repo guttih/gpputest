@@ -37,10 +37,13 @@ fi
 # --- ACTION STARTS HERE ---
 $DIR/clean.sh $WORK_DIR
 
+echo "mkdir -p $FILES_DIR && cp -R src/* $FILES_DIR"
 mkdir -p "$FILES_DIR" && cp -R src/* "$FILES_DIR"
 echo "tar -czvf $NAME_VER.tar.gz $NAME_VER"
 cd "$FILES_DIR" && cd .. || exit 
-tar -czvf "$NAME_VER.tar.gz" "$NAME_VER"
+if tar -czvf "$NAME_VER.tar.gz" "$NAME_VER";then
+    rm -rf "$FILES_DIR"
+fi
 cd "$CURRENT_DIR" || exit
 
 rpmdev-setuptree
@@ -52,8 +55,8 @@ if ! test -f "$PACKAGE.spec"; then
     echo "  vi  "$PACKAGE.spec""
     exit 1
 fi
-echo "cp $FILES_DIR.tar.gz  $RPMBUILD_DIR/SOURCES/"
-     cp "$FILES_DIR.tar.gz" $RPMBUILD_DIR/SOURCES/
+echo "mv $FILES_DIR.tar.gz  $RPMBUILD_DIR/SOURCES/"
+     mv "$FILES_DIR.tar.gz" $RPMBUILD_DIR/SOURCES/
 echo "cp $PACKAGE.spec  $RPMBUILD_DIR/SPECS/"
      cp "$PACKAGE.spec" $RPMBUILD_DIR/SPECS/
 

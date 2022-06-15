@@ -58,7 +58,8 @@ echo "Available command are:"
 echo -en '\033[01;37m'
 find /usr/bin -name gpputest-*.sh  -printf "  %f\n"
 echo -e '\033[0m'
-echo -e 'Information about this package at: https://guttih.com/public/vault/repo/description/gpputest'
+echo -e "Package information: /usr/share/gpputest/doc/README.md\n"
+echo -e 'Further information about this package at: https://guttih.com/public/vault/repo/description/gpputest'
 
 
 
