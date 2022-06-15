@@ -41,7 +41,6 @@ build/build.sh
         ```
         rpmdev-setuptree
         ```
-        *Alternatively you can create at different location* `mkdir -p ~/gpputest/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}`
 2. Create a spec file for the package and edit, and copy it into `~/rpmbuild`
     - Create and edit the spec
         ```

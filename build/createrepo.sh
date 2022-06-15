@@ -22,7 +22,8 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 CURRENT_DIR=$( pwd )
 SPEC_FILE="$PACKAGE.spec"
 VER=$( grep "Version:" "$SPEC_FILE" |tr -s ' '|cut -d ' ' -f2 )
-RPMBUILD_DIR="$HOME/rpmbuild"
+WORK_DIR=$HOME
+RPMBUILD_DIR="$WORK_DIR/rpmbuild"
 NAME_VER="gpputest-$VER"
 
 if [[ -z $VER ]]; then 
