@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>GppUTest</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <style>
+            pre { background: lightgray; }
+            </style>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <h1>GppUTest RPM package</h1>
+        <p>Contains scripts to help with creating a new c++ project which includes
+            a unit tests allowing you to develop using a Test Driven Development (TDD) </p>
+
+        <h3>Scripts in package</h3>
+        <ul>
+            <li>/usr/share/gpputest/scripts/gpputest-install.sh</li>
+            <li>/usr/share/gpputest/scripts/gpputest-newQtProject.sh</li>
+            <li>/usr/share/gpputest/scripts/gpputest-setupTest.sh</li>
+        </ul>
+        
+        <h3>Installing the package manually</h3>
+        <pre>
+            wget https://guttih.com/public/vault/repo/guttih/gpputest-1.0.0-1.el8.noarch.rpm
+            sudo rpm --install gpputest-1.0.0-1.el8.noarch.rpm
+        </pre>
+        <h3>Uninstall</h3>
+        <pre>
+            sudo rpm --erase gpputest
+        </pre>
+
+        <h3>Get tar file</h3>
+        <pre>
+            wget https://guttih.com/public/vault/repo/assets/release/gpputest-1.0.0.tar.gz
+        </pre>
+
+        <script src="" async defer></script>
+    </body>
+</html>
+

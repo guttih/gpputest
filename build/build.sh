@@ -73,10 +73,13 @@ echo "tar -ztvf $RPMBUILD_DIR/SOURCES/$NAME_VER.tar.gz"
 
 URL=$( dirname $( grep "Source0:" gpputest.spec | tr -s ' '|cut -d ' ' -f2 ) )
 
-UPLOAD_DEST=guttih@guttih.com:/var/www/web-guttih/public/vault/repo/assets/release
-echo "scp $RPMBUILD_DIR/SOURCES/* $UPLOAD_DEST"
-if scp $RPMBUILD_DIR/SOURCES/* "$UPLOAD_DEST"; then
+UPLOAD_ROOT=guttih@guttih.com:/var/www/web-guttih/public/vault/repo
+UPLOAD_RELEASE="$UPLOAD_ROOT/assets/release"
+UPLOAD_DESC="$UPLOAD_ROOT/description/gpputest"
+echo "scp $RPMBUILD_DIR/SOURCES/* $UPLOAD_RELEASE"
+if scp $RPMBUILD_DIR/SOURCES/* "$UPLOAD_RELEASE"; then
     echo "${successColor}Package accessable${norm} at: $URL/$NAME_VER.tar.gz"
+    scp support/index.html "$UPLOAD_DESC";
 else
-    echo "${errorColor}Error deploying package${norm} to $UPLOAD_DEST"
+    echo "${errorColor}Error deploying package${norm} to $UPLOAD_RELEASE"
 fi

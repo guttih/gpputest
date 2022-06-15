@@ -48,6 +48,7 @@ echo -e '\033[01;37m'
 echo "Available command are:"
 find "/usr/share/gpputest/scripts" -type f  -exec echo {}  \;
 echo -e '\033[0m'
+echo -e 'Information about this package at: https://guttih.com/public/vault/repo/description/gpputest'
 
 
 
