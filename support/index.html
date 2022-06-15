@@ -4,51 +4,103 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>GppUTest</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-        <style>
-            pre { background: lightgray; }
-            </style>
-    </head>
-    <body>
-        <!--[if lt IE 7]>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>GppUTest</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+    <style>
+        pre {
+            background: lightgray;
+            padding: 10px;
+        }
+
+        .section {
+            border-style: solid;
+            border-width: 0px 0px 1px 0px;
+            padding: 20px 0px 20px 0px;
+            margin-left: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <h1>GppUTest RPM package</h1>
-        <p>Contains scripts to help with creating a new c++ project which includes unit tests allowing you to develop using a Test Driven Development (TDD).</p>
-        <p>To be able to use these scripts <b>cpputest</b> needs to be installed.</p>
-        
-        <p>See <a href="https://cpputest.github.io">https://cpputest.github.io</a> for more details.</p>
+    <h1>GppUTest RPM package</h1>
+    <p>Contains scripts to help with creating a new c++ project which includes unit tests allowing you to develop using
+        a Test Driven Development (TDD).</p>
+    <p>To be able to use these scripts <b>cpputest</b> needs to be installed.</p>
 
+    <p>See <a href="https://cpputest.github.io">https://cpputest.github.io</a> for more details.</p>
 
+    <div class="section">
         <h3>Scripts in package</h3>
         <ul>
-            <li>/usr/share/gpputest/scripts/gpputest-install.sh</li>
-            <li>/usr/share/gpputest/scripts/gpputest-newQtProject.sh</li>
-            <li>/usr/share/gpputest/scripts/gpputest-setupTest.sh</li>
+            <li>gpputest-install.sh</li>
+            <li>gpputest-newQtProject.sh</li>
+            <li>gpputest-setupTest.sh</li>
         </ul>
-        
-        <h3>Installing the package manually</h3>
-        <pre>
-            wget https://guttih.com/public/vault/repo/guttih/gpputest-1.0.0-1.el8.noarch.rpm
-            sudo rpm --install gpputest-1.0.0-1.el8.noarch.rpm
-        </pre>
-        <h3>Uninstall</h3>
-        <pre>
-            sudo rpm --erase gpputest
-        </pre>
+    </div>
 
+    <div class="section">
+        <h3>Manual install</h3>
+        <ol>
+            <li>Install the package
+                <pre>wget https://guttih.com/public/vault/repo/guttih/gpputest-1.0.0-1.el8.noarch.rpm
+sudo rpm --install gpputest-1.0.0-1.el8.noarch.rpm</pre>
+            </li>
+            <li>Un-install the package
+                <pre>sudo rpm --erase gpputest</pre>
+            </li>
+        </ol>
+
+    </div>
+
+    <div class="section">
         <h3>Get tar file</h3>
-        <pre>
-            wget https://guttih.com/public/vault/repo/assets/release/gpputest-1.0.0.tar.gz
-        </pre>
+        <pre>wget https://guttih.com/public/vault/repo/assets/release/gpputest-1.0.0.tar.gz</pre>
+    </div>
 
-        <script src="" async defer></script>
-    </body>
+    <div class="section">
+        <h3>Installing package from guttih repository </h3>
+        <ol>
+            <li>Install the guttih repository
+                <pre>echo -e "[guttih]\nname=guttih repository\nbaseurl=https://guttih.com/public/vault/repo/guttih\ngpgcheck=0\nenabled=1" | sudo tee "/etc/yum.repos.d/guttih.repo"</pre>
+            </li>
+            <li>
+                <ul>
+                    <li>Use dnf to install the package from guttih repository
+                        <pre>dnf -y install gpputest</pre>
+                    </li>
+                    <li>Use dnf to un-install the package
+                        <pre>dnf -y remove gpputest</pre>
+                    </li>
+                </ul>
+
+            </li>
+        </ol>
+
+    </div>
+
+    <div class="section">
+        <h3>Example </h3>
+        <p>How to create a new QT project for TDD</p>
+        <pre>mkdir -p ~/newProject 
+cd ~/newProject
+gpputest-newQtProject.sh -appname helloWorld
+gpputest-setupTest.sh  -dir ~/newProject  -appdir ~/newProject/src  -codedir ~/newProject/src/code</pre>
+        <p>And run all tests and show test coverage</p>
+        <pre>make testcov</pre>
+    </div>
+
+
+
+    <script src="" async defer></script>
+</body>
+
 </html>
-

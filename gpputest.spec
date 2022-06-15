@@ -53,10 +53,10 @@ ln -s /usr/share/gpputest/scripts/gpputest-install.sh /usr/bin/gpputest-install.
 ln -s /usr/share/gpputest/scripts/gpputest-newQtProject.sh /usr/bin/gpputest-newQtProject.sh
 ln -s /usr/share/gpputest/scripts/gpputest-setupTest.sh /usr/bin/gpputest-setupTest.sh
 echo
-echo "Installed to /usr/share/%{name}"
-echo -e '\033[01;37m'
+echo -e "Installed to /usr/share/%{name}\n"
 echo "Available command are:"
-find "/usr/share/gpputest/scripts" -type f  -exec echo {}  \;
+echo -en '\033[01;37m'
+find /usr/bin -name gpputest-*.sh  -printf "  %f\n"
 echo -e '\033[0m'
 echo -e 'Information about this package at: https://guttih.com/public/vault/repo/description/gpputest'
 
