@@ -28,7 +28,7 @@ Note, to be able to use these scripts cpputest needs to be installed.
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p %{buildroot}/usr/share/%{name}/{scripts,doc}
-install -m644 scripts/* %{buildroot}/usr/share/%{name}/scripts
+install -m755 scripts/* %{buildroot}/usr/share/%{name}/scripts
 install -m644 doc/* %{buildroot}/usr/share/%{name}/doc
 install -m644 LICENSE %{buildroot}/usr/share/%{name}
 
@@ -41,7 +41,17 @@ install -m644 LICENSE %{buildroot}/usr/share/%{name}
 %dir /usr/share/%{name}/doc
 %dir /usr/share/%{name}
 
+%postun
+case "$1" in
+  0) # last one out put out the lights
+    rm -f /usr/bin/gpputest-*.sh
+  ;;
+esac
+
 %post
+ln -s /usr/share/gpputest/scripts/gpputest-install.sh /usr/bin/gpputest-install.sh
+ln -s /usr/share/gpputest/scripts/gpputest-newQtProject.sh /usr/bin/gpputest-newQtProject.sh
+ln -s /usr/share/gpputest/scripts/gpputest-setupTest.sh /usr/bin/gpputest-setupTest.sh
 echo
 echo "Installed to /usr/share/%{name}"
 echo -e '\033[01;37m'
