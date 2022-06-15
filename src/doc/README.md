@@ -1,19 +1,33 @@
 # GppUTest README.md
 Scripts to help with creating TDD c++ projects with CppUTest
+
+**gpputest** is a installable package for Red Hat-Based Linux distros (like: *Red Hat*, *Fedora*, *Centos* and *Rocky linux*).  The package has been tested on *Rocky Linux 8.6 (Green Obsidian)*
+
                     
 Click [Online info](https://guttih.com/public/vault/repo/description/gpputest) get get more information about this package.
 
 ## Requirements
 - [CppUTest]
 - [lcov]
-
-**gpputest** is a installable rpm for Red Hat-Based Linux like
-  - Red hat
-  - fedora
-  - Centos
-  - Rocky linux
+- [QT]
   
-The package has been tested on *Rocky Linux 8.6 (Green Obsidian)*
+### Installing qt
+
+You need to visit [qt download page] and download the qt installer. In order to make the installer run on a fresh Rocky linux 8.6 in needed to install these packages:
+
+1. First I installed these packages
+    ```
+    sudo dnf install gpputest xcb-util-wm  libxcb-image xcb-util-image xcb-util-keysyms xcb-util-renderutil
+    ```
+2. Then I installed this package group
+    ```
+    sudo dnf groupinstall "Development Tools"
+    ```
+3. Finally I Ran the QT installer
+    1. Download the installer from [qt download page]
+    2. Make the downloaded installer runnable.
+        - The installer will be named something like `qt-unified-linux-x64-4.4.0-online.run`
+    3. Run the installer
 
 ## CPPUTest example project
 
@@ -75,3 +89,5 @@ After creating a C++ TDD project with scripts `gpputest-newQtProject.sh` and `gp
 [CppUTest repo]: https://github.com/cpputest/cpputest
 [lcov]: http://ltp.sourceforge.net/coverage/lcov.php
 [lcov repo]: https://github.com/linux-test-project/lcov
+[QT]: https://www.qt.io
+[QT download page]: https://www.qt.io/download
