@@ -6,10 +6,12 @@ My notes about developing this repository
 In order to use these rpm dev tools you will need to install these packages
 
 ```
-dnf -y install rpmdevtools rpmlint tree
+dnf -y install rpmdevtools rpmlint tree createrepo
 ```
 ## Further reading
  - https://rpm.org/documentation.html
+ - https://docs.fedoraproject.org/en-US/package-maintainers/Packaging_Tutorial_GNU_Hello/
+ - http://ftp.rpm.org/max-rpm/s1-rpm-inside-scripts.html
 
 
 ## Steps to create a new rpm package automatically
@@ -67,3 +69,6 @@ build/build.sh
     scp ~/rpmbuild/SOURCES/* username@guttih.com:/var/www/web-guttih/public/vault/repo/assets/release;
 
     ```
+
+## Other notes
+    - **Clear chase** ``
