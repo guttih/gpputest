@@ -163,10 +163,15 @@ fi
 createQtApp(){
     if [ $# -ne 3 ]; then echo "Invalid number of parameters provided to $FUNCNAME"; exit 1; fi
     
-    declare REPOSITORY_DIR="$1"
+    declare PROJECT_DIR="$1"
     declare DIR="$2"
     declare NAME="$3"
     declare CPP_FILE="$DIR"/"$NAME".cpp
+
+    if ! qmake -v; then
+        echo -e "${errorColor}Unable to run qmake.${norm}\n  Make sure command ${highlight}qmake${norm} is accessable from command line without a path to it."
+    fi
+
     mkdir -p "$DIR"/code
     echo "Creating $CPP_FILE"
     CURRENT=$(date +"%Y-%m-%d %H:%M:%S")
@@ -192,7 +197,7 @@ EOM
     qmake -project -o "$NAME.pro" && echo 'QT += widgets' | cat - "$NAME.pro" > temp && mv temp "$NAME.pro" && qmake && make
     declare LINK="https://raw.githubusercontent.com/github/gitignore/main/Qt.gitignore"
     wget -q  "$LINK" -O .gitignore && echo "Downloaded .gitignore for QT" || echo "${errorColor}Error downloading ${norm}$LINK"
-    cd "$REPOSITORY_DIR" || exit
+    cd "$DIR" || exit
    declare APP="$DIR/$NAME"
    if test -f "$APP"
    then
@@ -267,7 +272,7 @@ EOM
     cd "$DIR" || exit
     declare LINK="https://raw.githubusercontent.com/github/gitignore/main/C.gitignore"
     wget -q  "$LINK" -O .gitignore && echo "Downloaded .gitignore for cpp" || echo "${errorColor}Error downloading ${norm}$LINK"
-    cd "$REPOSITORY_DIR" || exit
+    cd "$PROJECT_DIR" || exit
    declare APP="$DIR/$NAME"
    if test -f "$APP"
    then
@@ -281,7 +286,7 @@ EOM
 declare APP_DIR="$REPO_DIR"/src
 declare CODE_DIR="$APP_DIR"/code
 if [[ -n "$QT" ]]; then 
-    createQtApp "$SCRIPT_DIR" "$APP_DIR" "$APPNAME"
+    createQtApp . "$APP_DIR" "$APPNAME"
 else
     createApp "$APP_DIR" "$APPNAME"
 fi
