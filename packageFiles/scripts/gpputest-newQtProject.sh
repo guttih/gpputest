@@ -205,7 +205,7 @@ EOM
 declare APP_DIR="$REPO_DIR"/src
 declare CODE_DIR="$APP_DIR"/code
 createQtApp "$SCRIPT_DIR" "$APP_DIR" "$APPNAME"
-"$SCRIPT_DIR"/setupTest.sh -reset -dir "$REPO_DIR" -appdir "$APP_DIR" -codedir "$CODE_DIR"
+"$SCRIPT_DIR"/gpputest-setupTest.sh -reset -dir "$REPO_DIR" -appdir "$APP_DIR" -codedir "$CODE_DIR"
 echo "All source code is here   : ${highlight}$APP_DIR${norm}"
 echo "Code to be tested is here : ${highlight}$CODE_DIR${norm}"
 echo -ne "Now try to run the tests and get the code coverage with command\n${highlight}make testcov${norm}\n"
