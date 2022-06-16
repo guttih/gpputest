@@ -50,7 +50,7 @@ esac
 
 %post
 ln -s /usr/share/gpputest/scripts/gpputest-install.sh /usr/bin/gpputest-install.sh
-ln -s /usr/share/gpputest/scripts/gpputest-newQtProject.sh /usr/bin/gpputest-newQtProject.sh
+ln -s /usr/share/gpputest/scripts/gpputest-new.sh /usr/bin/gpputest-new.sh
 ln -s /usr/share/gpputest/scripts/gpputest-setupTest.sh /usr/bin/gpputest-setupTest.sh
 echo
 echo -e "Installed to /usr/share/%{name}\n"

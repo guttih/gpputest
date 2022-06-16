@@ -58,9 +58,9 @@ sudo dnf groupinstall "Development Tools"
 
     ```
 
-###### Getting this repository 
+###### make commands
 
-After creating a C++ TDD project with scripts `gpputest-newQtProject.sh` and `gpputest-install.sh`
+After creating a C++ TDD project with scripts `gpputest-new.sh`
 
 - you can give the following make commands:
     - `make  test` : build and run the tests

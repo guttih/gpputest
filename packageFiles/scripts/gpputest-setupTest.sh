@@ -4,7 +4,7 @@
 options=("-h" "--help" "-reset" "-f")
 
 #Options that must be followed with one argument
-optionsWithArgument=(-dir -codedir -appdir)
+optionsWithArgument=(-dir -codedir -appdir -appname)
 
 #Options that must be provided by the user
 optionsRequired=(-dir -codedir -appdir)
@@ -12,6 +12,7 @@ optionsRequired=(-dir -codedir -appdir)
 #Set to true you want to allow any arguments to be given
 #Set to false if you only want to allow options in  "options" and "optionsWithArgument"
 ALLOW_UNPROCESSED="false"
+APPNAME="appliction"
 
 printHelp() {
     printf 'Usage: %s [OPTIONS]...\n' "$(basename "$0")"
@@ -25,6 +26,7 @@ printHelp() {
     echo "  -dir      The project root directory.  A sub folder tests will be created"
     echo "  -codedir  The code directory.  The directory that contains the header files to be tested"
     echo "  -appdir   Application directory"
+    echo "  -appname  Name of the application"
     echo
     echo "ARGUMENTS               Option argument description"
     echo " directory              Project directory"
@@ -266,7 +268,8 @@ EOM
 #Argument 2($2): Source directory
 #Argument 3($3): TEST directory
 #Argument 4($4): include directory
-#Argument 5($5): Test target (output file)
+#Argument 5($5): Test target        (output file)
+#Argument 6($6): Application target (output file)
 makeFileMakefile() {
     declare FILE="$1"/Makefile
     declare CURRENT=$(date +"%Y-%m-%d %H:%M:%S")
@@ -277,7 +280,7 @@ PROJECT_DIR=$1
 SRC_DIR=$2
 TEST_DIR=$3
 CODE_DIR=$4
-OUT=$5
+OUT=$6
 TEST_TARGET=$5
 COVERAGE_DIR=\$(TEST_DIR)/coverage
 CPPUTEST_USE_GCOV=Y
@@ -303,7 +306,7 @@ build:
 	make -C $5
 
 main: testCodeExample.o
-	gcc -I\$(CODE_DIR) \$(CODE_DIR)/testCodeExample.o \$(SRC_DIR)/main.cpp -o \$(OUT)
+	gcc -I\$(CODE_DIR) \$(CODE_DIR)/testCodeExample.o \$(SRC_DIR)/\$(OUT).cpp -o \$(SRC_DIR)/\$(OUT)
 
 all: test main
 
@@ -434,4 +437,4 @@ makeFileTestsTest "$TEST_DIR"
 makeFileTestsGitIgnore "$TEST_DIR"
 makeFileTestsCodeExample "$CODE_DIR"
 makeFileTestsMakefile "$TEST_DIR" "$DIR" "$CODE_DIR" "$TEST_DIR" "$CODE_DIR" "$CODE_DIR" "$TEST_EXECUTABLE"
-makeFileMakefile "$DIR" "$APP_DIR" "$TEST_DIR" "$CODE_DIR" "$TEST_EXECUTABLE"
+makeFileMakefile "$DIR" "$APP_DIR" "$TEST_DIR" "$CODE_DIR" "$TEST_EXECUTABLE" "$APPNAME"

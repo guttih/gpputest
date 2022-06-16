@@ -46,7 +46,7 @@
         <h3>Scripts in package</h3>
         <ul>
             <li>gpputest-install.sh</li>
-            <li>gpputest-newQtProject.sh</li>
+            <li>gpputest-new.sh</li>
             <li>gpputest-setupTest.sh</li>
         </ul>
     </div>
@@ -92,11 +92,21 @@ sudo rpm --install gpputest-1.0.0-1.el8.noarch.rpm</pre>
 
     <div class="section">
         <h3>Example </h3>
+        <p>How to create a new c++ console application project for TDD</p>
+        <pre>mkdir -p ~/newProject 
+cd ~/newProject
+gpputest-new -appname helloWorld
+</pre>
+        <p>And run all tests and show test coverage</p>
+        <pre>make testcov</pre>
+    </div>
+    <div class="section">
+        <h3>Example </h3>
         <p>How to create a new QT project for TDD</p>
         <pre>mkdir -p ~/newProject 
 cd ~/newProject
-gpputest-newQtProject.sh -appname helloWorld
-gpputest-setupTest.sh  -dir ~/newProject  -appdir ~/newProject/src  -codedir ~/newProject/src/code</pre>
+gpputest-new -qt -appname helloWorld
+</pre>
         <p>And run all tests and show test coverage</p>
         <pre>make testcov</pre>
     </div>

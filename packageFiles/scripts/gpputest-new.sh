@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #true or false options.
-options=( "-h" "--help" "-reset" ) 
+options=( "-h" "--help" "-reset" "-qt") 
 
 #Options that must be followed with one argument
 optionsWithArgument=( "-appname" ) 
@@ -21,6 +21,7 @@ printHelp() {
     echo "OPTIONS    Option description"
     echo "  --help   Prints this help page"
     echo "  -reset   Remove previous src and test dirs and create a new setup "
+    echo "  -qt      Create a QT application"
     echo "  -appname Name of the Qt application "
     echo
     echo "ARGUMENTS  Option argument description"
@@ -202,10 +203,90 @@ EOM
    
 }
 
+#Function: createApp()
+#
+#Brief: Creates a cpp console application
+#
+#Requirements  : gcc must be installed and in path
+#Argument 1($1): Directory where to create the application
+#Argument 2($2): name of the output binary file
+createApp(){
+    if [ $# -ne 2 ]; then echo "Invalid number of parameters provided to $FUNCNAME"; exit 1; fi
+    
+    declare DIR="$1"
+    declare NAME="$2"
+    declare CPP_FILE="$DIR"/"$NAME".cpp
+    declare MAKE_FILE="$DIR"/Makefile
+    mkdir -p "$DIR"/code
+    echo "Creating $CPP_FILE"
+    CURRENT=$(date +"%Y-%m-%d %H:%M:%S")
+    read -r -d '' VAR <<EOM
+// File $NAME.cpp created $CURRENT.
+#include <stdlib.h>
+#include <stdio.h>
+#include "code/testCodeExample.h"
+
+int untestedFunc( int a, int b )
+{
+    return a + b;
+}
+
+int main( void )
+{
+    test_func();
+    printf( "hello world!\n" );
+    printf( "untestedFunc(2,3) = %d\n", untestedFunc( 2, 3 ) );
+    exit( 0 );
+}
+EOM
+    echo "$VAR" >"$CPP_FILE"
+
+    read -r -d '' XVAR <<EOM
+# File src/Makefile created $CURRENT.
+SRC_DIR=$DIR
+# specify where the source code and includes are located
+INCLUDE_DIRS=\$(SRC_DIR)/code
+SRC_DIRS=\$(SRC_DIR)
+CODE_DIR=\$(SRC_DIRS)/code
+OUT=$NAME
+
+\$(info    SRC_DIR:\$(SRC_DIR))
+\$(info    INCLUDE_DIRS:\$(INCLUDE_DIRS))
+\$(info    SRC_DIRS:\$(SRC_DIRS))
+
+
+# run MakefileWorker.mk with the variables defined here
+# include MakefileWorker.mk
+code.o:
+	gcc -c -I\$(CODE_DIR) \$(CODE_DIR)/testCodeExample.cpp -o \$(CODE_DIR)/code.o
+
+main: code.o
+	gcc -I\$(SRC_DIR) -I\$(CODE_DIR) \$(CODE_DIR)/code.o \$(SRC_DIR)/\$(OUT).cpp -o \$(OUT)
+EOM
+    echo "$XVAR" >"$MAKE_FILE"
+    cd "$DIR" || exit
+    declare LINK="https://raw.githubusercontent.com/github/gitignore/main/C.gitignore"
+    wget -q  "$LINK" -O .gitignore && echo "Downloaded .gitignore for cpp" || echo "${errorColor}Error downloading ${norm}$LINK"
+    cd "$REPOSITORY_DIR" || exit
+   declare APP="$DIR/$NAME"
+   if test -f "$APP"
+   then
+       echo "${successColor}App created${norm}, You can run the app with command: ${highlight}$APP${norm}"
+   else
+       echo "Unable to make the app"
+   fi
+   
+}
+
 declare APP_DIR="$REPO_DIR"/src
 declare CODE_DIR="$APP_DIR"/code
-createQtApp "$SCRIPT_DIR" "$APP_DIR" "$APPNAME"
-"$SCRIPT_DIR"/gpputest-setupTest.sh -reset -dir "$REPO_DIR" -appdir "$APP_DIR" -codedir "$CODE_DIR"
+if [[ -n "$QT" ]]; then 
+    createQtApp "$SCRIPT_DIR" "$APP_DIR" "$APPNAME"
+else
+    createApp "$APP_DIR" "$APPNAME"
+fi
+
+"$SCRIPT_DIR"/gpputest-setupTest.sh -reset -dir "$REPO_DIR" -appdir "$APP_DIR" -codedir "$CODE_DIR" -appname "$APPNAME"
 echo "All source code is here   : ${highlight}$APP_DIR${norm}"
 echo "Code to be tested is here : ${highlight}$CODE_DIR${norm}"
 echo -ne "Now try to run the tests and get the code coverage with command\n${highlight}make testcov${norm}\n"
