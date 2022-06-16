@@ -17,7 +17,7 @@ You need to visit [qt download page] and download the qt installer. In order to 
 
 1. First I installed these packages
     ```
-    sudo dnf install gpputest xcb-util-wm  libxcb-image xcb-util-image xcb-util-keysyms xcb-util-renderutil
+    sudo dnf install gpputest xcb-util-wm  xcb-util-image xcb-util-keysyms xcb-util-renderutil
     ```
 2. Then I installed this package group
     ```
