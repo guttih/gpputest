@@ -8,4 +8,4 @@ Scripts to help with creating TDD c++ projects with CppUTest
   
 The package has been tested on *Rocky Linux 8.6 (Green Obsidian)*
 README.md
-[Package readme ](src/doc/README.md)
+[Package readme ](packageFiles/doc/README.md)

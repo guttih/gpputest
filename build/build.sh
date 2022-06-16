@@ -37,8 +37,8 @@ fi
 # --- ACTION STARTS HERE ---
 $DIR/clean.sh $WORK_DIR
 
-echo "mkdir -p $FILES_DIR && cp -R src/* $FILES_DIR"
-mkdir -p "$FILES_DIR" && cp -R src/* "$FILES_DIR"
+echo "mkdir -p $FILES_DIR && cp -R packageFiles/* $FILES_DIR"
+mkdir -p "$FILES_DIR" && cp -R packageFiles/* "$FILES_DIR"
 echo "tar -czvf $NAME_VER.tar.gz $NAME_VER"
 cd "$FILES_DIR" && cd .. || exit 
 if tar -czvf "$NAME_VER.tar.gz" "$NAME_VER";then

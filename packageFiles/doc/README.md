@@ -17,13 +17,9 @@ You need to visit [qt download page] and download the qt installer. In order to 
 
 1. First I installed these packages
     ```
-    sudo dnf install gpputest xcb-util-wm  xcb-util-image xcb-util-keysyms xcb-util-renderutil
+    sudo dnf install xcb-util-wm  xcb-util-image xcb-util-keysyms xcb-util-renderutil
     ```
-2. Then I installed this package group
-    ```
-    sudo dnf groupinstall "Development Tools"
-    ```
-3. Finally I Ran the QT installer
+2. Then I ran the QT installer
     1. Download the installer from [qt download page]
     2. Make the downloaded installer runnable.
         - The installer will be named something like `qt-unified-linux-x64-4.4.0-online.run`
