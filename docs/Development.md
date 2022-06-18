@@ -83,9 +83,12 @@ Get the [cpputest repo ](https://github.com/cpputest/cpputest)
    cd ~/repos
    git clone  https://github.com/cpputest/cpputest.git
    cd cpputest
+   ./autogen.sh 
+    cd cpputest_build
+    autoreconf .. -i
+    ../configure
+    make
+    sudo make install
+
     ```
-2. 
-    ```
-    echo stuff
     
-    ```

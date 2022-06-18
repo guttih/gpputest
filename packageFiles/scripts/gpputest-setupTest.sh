@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #true or false options.
-options=("-h" "--help" "-reset" "-f")
+options=("-h" "--help" "-reset" "-f" -qt)
 
 #Options that must be followed with one argument
 optionsWithArgument=(-dir -codedir -appdir -appname)
@@ -27,6 +27,7 @@ printHelp() {
     echo "  -codedir  The code directory.  The directory that contains the header files to be tested"
     echo "  -appdir   Application directory"
     echo "  -appname  Name of the application"
+    echo "  -qt       Creating tests for a QT application"
     echo
     echo "ARGUMENTS               Option argument description"
     echo " directory              Project directory"
@@ -269,10 +270,17 @@ EOM
 #Argument 3($3): TEST directory
 #Argument 4($4): include directory
 #Argument 5($5): Test target        (output file)
-#Argument 6($6): Application target (output file)
+#Argument 6($6): Application target (output file)f
+#Argument 7($6): QT project is beeing built
 makeFileMakefile() {
     declare FILE="$1"/Makefile
     declare CURRENT=$(date +"%Y-%m-%d %H:%M:%S")
+    declare MAIN_COMMAND='gcc -I$(CODE_DIR) $(CODE_DIR)/testCodeExample.o $(SRC_DIR)/$(OUT).cpp -o $(SRC_DIR)/$(OUT)'
+    if [[ -n $7  ]];then
+        echo "main should use Makefile in src directory for QT projects" 
+        MAIN_COMMAND="make -C $2"
+        echo "MAIN_COMMAND: $MAIN_COMMAND"
+    fi
     echo "Creating $FILE"
     read -r -d '' VAR <<EOM
 #  File Makefile, created $CURRENT.
@@ -306,7 +314,7 @@ build:
 	make -C $5
 
 main: testCodeExample.o
-	gcc -I\$(CODE_DIR) \$(CODE_DIR)/testCodeExample.o \$(SRC_DIR)/\$(OUT).cpp -o \$(SRC_DIR)/\$(OUT)
+	$MAIN_COMMAND
 
 all: test main
 
@@ -473,7 +481,7 @@ makeFileTestsTest "$TEST_DIR"
 makeFileTestsGitIgnore "$TEST_DIR"
 makeFileTestsCodeExample "$CODE_DIR"
 makeFileTestsMakefile "$TEST_DIR" "$DIR" "$CODE_DIR" "$TEST_DIR" "$CODE_DIR" "$CODE_DIR" "$TEST_EXECUTABLE"
-makeFileMakefile "$DIR" "$APP_DIR" "$TEST_DIR" "$CODE_DIR" "$TEST_EXECUTABLE" "$APPNAME"
+makeFileMakefile "$DIR" "$APP_DIR" "$TEST_DIR" "$CODE_DIR" "$TEST_EXECUTABLE" "$APPNAME" $QT
 CURRENT_DIR=$( pwd )
 echo "current dir:$CURRENT_DIR"
 if ! make test; then

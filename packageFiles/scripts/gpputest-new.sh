@@ -174,7 +174,7 @@ downloadOrCopyFromExtras(){
     declare CURRENT=$( pwd )
     if curl "$URL"  --raw -s -o "$FILE"  ; then
         cd "$CURRENT"
-        exit 0
+        return 0
     else
         cd "$CURRENT"
         echo "Error saving downloaded file, using offline version"
@@ -201,7 +201,7 @@ downloadOrCopyFromExtras(){
 createQtApp(){
     if [ $# -ne 3 ]; then echo "Invalid number of parameters provided to $FUNCNAME"; exit 1; fi
     
-    declare PROJECT_DIR="$1"
+    declare PROJECT_DIR=$(readlink -m $1)
     declare DIR="$2"
     declare NAME="$3"
     declare CPP_FILE="$DIR"/"$NAME".cpp
@@ -236,7 +236,8 @@ EOM
     declare LINK="https://raw.githubusercontent.com/github/gitignore/main/Qt.gitignore"
     # wget -q  "$LINK" -O .gitignore && echo "Downloaded .gitignore for QT" || echo "${errorColor}Error downloading ${norm}$LINK"
     downloadOrCopyFromExtras "$LINK" . ".gitignore" && echo "Downloaded .gitignore for QT" || echo "${errorColor}Error downloading ${norm} .gitignore for QT"
-    cd "$DIR" || exit
+    make
+    cd "$PROJECT_DIR" || exit
    declare APP="$DIR/$NAME"
    if test -f "$APP"
    then
@@ -257,6 +258,7 @@ EOM
 createApp(){
     if [ $# -ne 2 ]; then echo "Invalid number of parameters provided to $FUNCNAME"; exit 1; fi
     
+    declare CURRENT_DIR=$( pwd )
     declare DIR="$1"
     declare NAME="$2"
     declare CPP_FILE="$DIR"/"$NAME".cpp
@@ -308,19 +310,14 @@ main: code.o
 	gcc -I\$(SRC_DIR) -I\$(CODE_DIR) \$(CODE_DIR)/code.o \$(SRC_DIR)/\$(OUT).cpp -o \$(OUT)
 EOM
     echo "$XVAR" >"$MAKE_FILE"
+    echo "DIR$DIR"
+    
     cd "$DIR" || exit
     declare LINK="https://raw.githubusercontent.com/github/gitignore/main/C.gitignore"
     # wget -q  "$LINK" -O .gitignore && echo "Downloaded .gitignore for cpp" || echo "${errorColor}Error downloading ${norm}$LINK"
+    
     downloadOrCopyFromExtras "$LINK" . .gitignore  && echo "Downloaded .gitignore for c++" || echo "${errorColor}Error downloading ${norm} .gitignore for c++"
-    cd "$PROJECT_DIR" || exit
-   declare APP="$DIR/$NAME"
-   if test -f "$APP"
-   then
-       echo "${successColor}App created${norm}, You can run the app with command: ${highlight}$APP${norm}"
-   else
-       echo "Unable to make the app"
-   fi
-   
+    cd "$CURRENT_DIR"
 }
 
 
@@ -329,11 +326,11 @@ declare APP_DIR="$REPO_DIR"/src
 declare CODE_DIR="$APP_DIR"/code
 if [[ -n "$QT" ]]; then 
     createQtApp . "$APP_DIR" "$APPNAME"
+    QT_PARAM="-qt"
 else
     createApp "$APP_DIR" "$APPNAME"
 fi
-
-if ! "$SCRIPT_DIR"/gpputest-setupTest.sh -reset -dir "$REPO_DIR" -appdir "$APP_DIR" -codedir "$CODE_DIR" -appname "$APPNAME"; then
+if ! "$SCRIPT_DIR"/gpputest-setupTest.sh -reset -dir "$REPO_DIR" -appdir "$APP_DIR" -codedir "$CODE_DIR" -appname "$APPNAME" $QT_PARAM; then
     echo "${errorColor}Unable to run tests${norm}, Has ${highlight}CppUTest${norm} been setup?"
     echo "  See https://cpputest.github.io/ for information on how to set it up."
 fi
