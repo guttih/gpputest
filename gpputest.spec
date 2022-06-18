@@ -30,15 +30,18 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p %{buildroot}/usr/share/%{name}/{scripts,doc}
 install -m755 scripts/* %{buildroot}/usr/share/%{name}/scripts
 install -m644 doc/* %{buildroot}/usr/share/%{name}/doc
+install -m644 extras/* %{buildroot}/usr/share/%{name}/extras
 install -m644 LICENSE %{buildroot}/usr/share/%{name}
 
 %files 
 %license LICENSE
 /usr/share/%{name}/scripts/*
 /usr/share/%{name}/doc/*
+/usr/share/%{name}/extras/*
 /usr/share/%{name}/LICENSE
 %dir /usr/share/%{name}/scripts
 %dir /usr/share/%{name}/doc
+%dir /usr/share/%{name}/extras
 %dir /usr/share/%{name}
 
 %postun

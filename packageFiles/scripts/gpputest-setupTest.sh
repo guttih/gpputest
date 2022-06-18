@@ -424,17 +424,58 @@ else
         exit 1
     fi
 fi
+
+#Function: downloadOrCopyFromExtras()
+#
+#Brief: Downloads a file, if it is not found the file is coped from /usr/share/gpputest/extras directory
+#
+#Argument 1($1): Url to a file to download (including the file name)
+#Argument 2($2): Destination directory
+#Argument 3($3): Destination file name
+#Returns 0 if success, otherwise 1
+downloadOrCopyFromExtras(){
+    if [ $# -ne 3 ]; then echo "Invalid number of parameters provided to $FUNCNAME"; exit 1; fi
+    declare BACKUP_DIR=/usr/share/gpputest/extras
+    declare URL="$1"
+    declare TO_DIR="$2"
+    declare FILE="$3"
+    declare FROM_FILE=$(basename "$1")
+    # if ! wget "$URL" -P "$TO_DIR"; then
+    declare CURRENT=$( pwd )
+    if curl "$URL"  --raw -s -o "$FILE"  ; then
+        cd "$CURRENT"
+        exit 0
+    else
+        cd "$CURRENT"
+        echo "Error saving downloaded file, using offline version"
+        
+    fi
+    cp "$BACKUP_DIR/$FROM_FILE" "$TO_DIR/$FILE"
+    if test -f "$TO_DIR/$FILE"
+    then
+        return 0
+    else
+        return 1
+    fi
+    
+}
+
 APP_EXECUTABLE="$(basename $APP_DIR)"
 TEST_EXECUTABLE="app"
 echo "APP_EXECUTABLE: $APP_EXECUTABLE"
 echo "TEST_EXECUTABLE: $TEST_EXECUTABLE"
-# APP_EXECUTABLE="example"
-mkdir "$TEST_DIR"
 declare LINK="https://raw.githubusercontent.com/cpputest/cpputest/master/build/MakefileWorker.mk"
-wget -q "$LINK" -P "$TEST_DIR" && echo "Downloaded MakefileWorker.mk test helper" || echo "${errorColor}Error downloading ${norm}$LINK"
+# wget -q "$LINK" -P "$TEST_DIR" && echo "Downloaded MakefileWorker.mk test helper" || echo "${errorColor}Error downloading ${norm}$LINK"
+mkdir -p "$TEST_DIR"
+downloadOrCopyFromExtras "$LINK" "$TEST_DIR" MakefileWorker.mk
 makeFileTestsMain "$TEST_DIR"
 makeFileTestsTest "$TEST_DIR"
 makeFileTestsGitIgnore "$TEST_DIR"
 makeFileTestsCodeExample "$CODE_DIR"
 makeFileTestsMakefile "$TEST_DIR" "$DIR" "$CODE_DIR" "$TEST_DIR" "$CODE_DIR" "$CODE_DIR" "$TEST_EXECUTABLE"
 makeFileMakefile "$DIR" "$APP_DIR" "$TEST_DIR" "$CODE_DIR" "$TEST_EXECUTABLE" "$APPNAME"
+CURRENT_DIR=$( pwd )
+echo "current dir:$CURRENT_DIR"
+if ! make test; then
+    exit 1
+fi
