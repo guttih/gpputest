@@ -27,7 +27,7 @@ Note, to be able to use these scripts cpputest needs to be installed.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-mkdir -p %{buildroot}/usr/share/%{name}/{scripts,doc}
+mkdir -p %{buildroot}/usr/share/%{name}/{scripts,doc,extras}
 install -m755 scripts/* %{buildroot}/usr/share/%{name}/scripts
 install -m644 doc/* %{buildroot}/usr/share/%{name}/doc
 install -m644 extras/* %{buildroot}/usr/share/%{name}/extras
