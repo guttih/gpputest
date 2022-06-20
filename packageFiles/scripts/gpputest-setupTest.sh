@@ -450,9 +450,10 @@ downloadOrCopyFromExtras(){
     declare FROM_FILE=$(basename "$1")
     # if ! wget "$URL" -P "$TO_DIR"; then
     declare CURRENT=$( pwd )
+    cd "$TO_DIR" || exit 1
     if curl "$URL"  --raw -s -o "$FILE"  ; then
         cd "$CURRENT"
-        exit 0
+        return 0
     else
         cd "$CURRENT"
         echo "Error saving downloaded file, using offline version"
@@ -475,7 +476,9 @@ echo "TEST_EXECUTABLE: $TEST_EXECUTABLE"
 declare LINK="https://raw.githubusercontent.com/cpputest/cpputest/master/build/MakefileWorker.mk"
 # wget -q "$LINK" -P "$TEST_DIR" && echo "Downloaded MakefileWorker.mk test helper" || echo "${errorColor}Error downloading ${norm}$LINK"
 mkdir -p "$TEST_DIR"
+echo "started download $LINK....................."
 downloadOrCopyFromExtras "$LINK" "$TEST_DIR" MakefileWorker.mk
+echo "downloaded....................."
 makeFileTestsMain "$TEST_DIR"
 makeFileTestsTest "$TEST_DIR"
 makeFileTestsGitIgnore "$TEST_DIR"
