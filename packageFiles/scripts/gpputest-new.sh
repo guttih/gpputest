@@ -7,7 +7,7 @@ options=( "-h" "--help" "-reset" "-qt")
 optionsWithArgument=( "-appname" ) 
 
 #Options that must be provided by the user
-optionsRequired=( "-appname" ) 
+optionsRequired=(  ) 
 
 #Set to true you want to allow any arguments to be given
 #Set to false if you only want to allow options in  "options" and "optionsWithArgument"
@@ -15,14 +15,16 @@ ALLOW_UNPROCESSED="false"
 
 printHelp() {
     printf 'Usage: %s [OPTIONS]...\n' "$(basename "$0")"
-    printf 'Usage: %s [OPTIONS]... (-appname <name>)\n' "$(basename "$0")"
+    printf 'Usage: %s [OPTIONS]... [-appname <name>]\n' "$(basename "$0")"
     echo "  Creates a new Qt widget application setup with CppUTest tests"
     echo 
     echo "OPTIONS    Option description"
     echo "  --help   Prints this help page"
     echo "  -reset   Remove previous src and test dirs and create a new setup "
     echo "  -qt      Create a QT application"
-    echo "  -appname Name of the Qt application "
+    echo "  -appname Name of the Qt application.  If appname is not provided"
+    echo "           default name is main. appname must be follwed by"
+    echo "           the <name> argument."
     echo
     echo "ARGUMENTS  Option argument description"
     echo " name      Name of the Qt (binary) application "  
@@ -34,6 +36,7 @@ printHelp() {
 
 REPO_DIR=$( pwd  )
 SCRIPT_DIR=$( echo "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )
+APPNAME="main"
 echo "REPO_DIR  : $REPO_DIR"
 echo "SCRIPT_DIR: $SCRIPT_DIR"
 
@@ -152,6 +155,41 @@ if [[ -n "$RESET" ]]; then
     rm -rf "$REPO_DIR"/tests
 fi
 
+#Function: downloadOrCopyFromExtras()
+#
+#Brief: Downloads a file, if it is not found the file is coped from /usr/share/gpputest/extras directory
+#
+#Argument 1($1): Url to a file to download (including the file name)
+#Argument 2($2): Destination directory
+#Argument 3($3): Destination file name
+#Returns 0 if success, otherwise 1
+downloadOrCopyFromExtras(){
+    if [ $# -ne 3 ]; then echo "Invalid number of parameters provided to $FUNCNAME"; exit 1; fi
+    declare BACKUP_DIR=/usr/share/gpputest/extras
+    declare URL="$1"
+    declare TO_DIR="$2"
+    declare FILE="$3"
+    declare FROM_FILE=$(basename "$1")
+    # if ! wget "$URL" -P "$TO_DIR"; then
+    declare CURRENT=$( pwd )
+    if curl "$URL"  --raw -s -o "$FILE"  ; then
+        cd "$CURRENT"
+        return 0
+    else
+        cd "$CURRENT"
+        echo "Error saving downloaded file, using offline version"
+        
+    fi
+    cp "$BACKUP_DIR/$FROM_FILE" "$TO_DIR/$FILE"
+    if test -f "$TO_DIR/$FILE"
+    then
+        return 0
+    else
+        return 1
+    fi
+    
+}
+
 #Function: createQtApp()
 #
 #Brief: Creates a Qt widget application
@@ -163,7 +201,7 @@ fi
 createQtApp(){
     if [ $# -ne 3 ]; then echo "Invalid number of parameters provided to $FUNCNAME"; exit 1; fi
     
-    declare PROJECT_DIR="$1"
+    declare PROJECT_DIR=$(readlink -m $1)
     declare DIR="$2"
     declare NAME="$3"
     declare CPP_FILE="$DIR"/"$NAME".cpp
@@ -196,8 +234,10 @@ EOM
     echo "qmake -project -o "$NAME.pro" && echo 'QT += widgets' | cat - "$NAME.pro" > temp && mv temp "$NAME.pro" && qmake && make"
     qmake -project -o "$NAME.pro" && echo 'QT += widgets' | cat - "$NAME.pro" > temp && mv temp "$NAME.pro" && qmake && make
     declare LINK="https://raw.githubusercontent.com/github/gitignore/main/Qt.gitignore"
-    wget -q  "$LINK" -O .gitignore && echo "Downloaded .gitignore for QT" || echo "${errorColor}Error downloading ${norm}$LINK"
-    cd "$DIR" || exit
+    # wget -q  "$LINK" -O .gitignore && echo "Downloaded .gitignore for QT" || echo "${errorColor}Error downloading ${norm}$LINK"
+    downloadOrCopyFromExtras "$LINK" . ".gitignore" && echo "Downloaded .gitignore for QT" || echo "${errorColor}Error downloading ${norm} .gitignore for QT"
+    make
+    cd "$PROJECT_DIR" || exit
    declare APP="$DIR/$NAME"
    if test -f "$APP"
    then
@@ -218,6 +258,7 @@ EOM
 createApp(){
     if [ $# -ne 2 ]; then echo "Invalid number of parameters provided to $FUNCNAME"; exit 1; fi
     
+    declare CURRENT_DIR=$( pwd )
     declare DIR="$1"
     declare NAME="$2"
     declare CPP_FILE="$DIR"/"$NAME".cpp
@@ -269,29 +310,30 @@ main: code.o
 	gcc -I\$(SRC_DIR) -I\$(CODE_DIR) \$(CODE_DIR)/code.o \$(SRC_DIR)/\$(OUT).cpp -o \$(OUT)
 EOM
     echo "$XVAR" >"$MAKE_FILE"
+    echo "DIR$DIR"
+    
     cd "$DIR" || exit
     declare LINK="https://raw.githubusercontent.com/github/gitignore/main/C.gitignore"
-    wget -q  "$LINK" -O .gitignore && echo "Downloaded .gitignore for cpp" || echo "${errorColor}Error downloading ${norm}$LINK"
-    cd "$PROJECT_DIR" || exit
-   declare APP="$DIR/$NAME"
-   if test -f "$APP"
-   then
-       echo "${successColor}App created${norm}, You can run the app with command: ${highlight}$APP${norm}"
-   else
-       echo "Unable to make the app"
-   fi
-   
+    # wget -q  "$LINK" -O .gitignore && echo "Downloaded .gitignore for cpp" || echo "${errorColor}Error downloading ${norm}$LINK"
+    
+    downloadOrCopyFromExtras "$LINK" . .gitignore  && echo "Downloaded .gitignore for c++" || echo "${errorColor}Error downloading ${norm} .gitignore for c++"
+    cd "$CURRENT_DIR"
 }
+
+
 
 declare APP_DIR="$REPO_DIR"/src
 declare CODE_DIR="$APP_DIR"/code
 if [[ -n "$QT" ]]; then 
     createQtApp . "$APP_DIR" "$APPNAME"
+    QT_PARAM="-qt"
 else
     createApp "$APP_DIR" "$APPNAME"
 fi
-
-"$SCRIPT_DIR"/gpputest-setupTest.sh -reset -dir "$REPO_DIR" -appdir "$APP_DIR" -codedir "$CODE_DIR" -appname "$APPNAME"
+if ! "$SCRIPT_DIR"/gpputest-setupTest.sh -reset -dir "$REPO_DIR" -appdir "$APP_DIR" -codedir "$CODE_DIR" -appname "$APPNAME" $QT_PARAM; then
+    echo "${errorColor}Unable to run tests${norm}, Has ${highlight}CppUTest${norm} been setup?"
+    echo "  See https://cpputest.github.io/ for information on how to set it up."
+fi
 echo "All source code is here   : ${highlight}$APP_DIR${norm}"
 echo "Code to be tested is here : ${highlight}$CODE_DIR${norm}"
 echo -ne "Now try to run the tests and get the code coverage with command\n${highlight}make testcov${norm}\n"

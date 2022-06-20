@@ -71,3 +71,24 @@ build/build.sh
 
 ## Other notes
     - **Clear chase** ``
+
+## Installing the cpputest by building source
+
+Get the [cpputest repo ](https://github.com/cpputest/cpputest)
+
+1. Clone git repo and install required packages
+    ```
+    sudo dnf install xcb-util-wm  xcb-util-image xcb-util-keysyms xcb-util-renderutil
+   mkdir -p ~/repos
+   cd ~/repos
+   git clone  https://github.com/cpputest/cpputest.git
+   cd cpputest
+   ./autogen.sh 
+    cd cpputest_build
+    autoreconf .. -i
+    ../configure
+    make
+    sudo make install
+
+    ```
+    
