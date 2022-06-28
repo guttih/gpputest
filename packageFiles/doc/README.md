@@ -47,15 +47,21 @@ sudo dnf groupinstall "Development Tools"
 
 2. CppUTest (Unit test framework)
     ```
+    #Installing neaded packages
+    sudo dnf update  
+    sudo dnf groupinstall "Development Tools"
+    sudo dnf -y install automake epel-release
+    sudo dnf -y install lcov    
+    
+    #Installing gpputest
     mkdir ~/repos
     cd ~/repos
     git clone https://github.com/cpputest/cpputest.git
-    cd ~/repos/cpputest/cpputest_build
+    cd cpputest/cpputest_build
     autoreconf .. -i
     ../configure
     make
     make install
-
     ```
 
 ###### make commands
